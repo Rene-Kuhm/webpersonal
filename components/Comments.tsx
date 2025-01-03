@@ -8,21 +8,20 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 
 interface Comment {
-  _id: string;
-  name: string;
-  content: string;
-  createdAt: string;
-}
-
-interface CommentsProps {
-  postId: string;
-  initialComments: Comment[];
+  _id: string
+  name: string
+  content: string
+  createdAt: string
 }
 
 interface CommentFormData {
-  name: string;
-  email: string;
-  content: string;
+  name: string
+  content: string
+}
+
+interface CommentsProps {
+  postId: string
+  initialComments: Comment[]
 }
 
 export default function Comments({ postId, initialComments }: CommentsProps) {
@@ -31,28 +30,25 @@ export default function Comments({ postId, initialComments }: CommentsProps) {
 
   const onSubmit = async (data: CommentFormData) => {
     try {
-      const response = await fetch('/api/comments', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...data,
-          postId,
-          createdAt: new Date().toISOString(),
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Error al enviar el comentario')
+      const newComment = {
+        _id: Date.now().toString(), // Temporary ID for preview
+        name: data.name,
+        content: data.content,
+        createdAt: new Date().toISOString(),
+        postId, // Include the postId in the comment data
       }
 
-      const newComment = await response.json()
+      // Here you would typically make an API call to save the comment
+      // For example:
+      // await fetch('/api/comments', {
+      //   method: 'POST',
+      //   body: JSON.stringify({ ...newComment, postId }),
+      // })
+
       setComments([newComment, ...comments])
       reset()
     } catch (error) {
-      console.error('Error:', error)
-      alert('Error al enviar el comentario. Por favor, inténtalo de nuevo.')
+      console.error('Error posting comment:', error)
     }
   }
 
@@ -62,53 +58,35 @@ export default function Comments({ postId, initialComments }: CommentsProps) {
       
       <Card className="mb-8">
         <CardHeader>
-          <CardTitle>Deja un comentario</CardTitle>
+          <CardTitle>Añadir un comentario</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <Input
-                {...register('name', { required: 'El nombre es requerido' })}
-                placeholder="Nombre"
+                {...register('name', { required: true })}
+                placeholder="Tu nombre"
                 className="w-full"
               />
               {errors.name && (
-                <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+                <span className="text-sm text-red-500">Este campo es requerido</span>
               )}
             </div>
-
-            <div>
-              <Input
-                {...register('email', { 
-                  required: 'El email es requerido',
-                  pattern: {
-                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: 'Email inválido'
-                  }
-                })}
-                type="email"
-                placeholder="Email"
-                className="w-full"
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-              )}
-            </div>
-
+            
             <div>
               <Textarea
-                {...register('content', { required: 'El comentario es requerido' })}
+                {...register('content', { required: true })}
                 placeholder="Tu comentario"
                 className="w-full"
                 rows={4}
               />
               {errors.content && (
-                <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
+                <span className="text-sm text-red-500">Este campo es requerido</span>
               )}
             </div>
-
+            
             <Button type="submit">
-              Enviar comentario
+              Publicar comentario
             </Button>
           </form>
         </CardContent>
@@ -117,7 +95,7 @@ export default function Comments({ postId, initialComments }: CommentsProps) {
       <div className="space-y-4">
         {comments.map((comment) => (
           <Card key={comment._id}>
-            <CardContent className="py-4">
+            <CardContent className="pt-6">
               <div className="flex justify-between items-start mb-2">
                 <h3 className="font-semibold">{comment.name}</h3>
                 <span className="text-sm text-gray-500">

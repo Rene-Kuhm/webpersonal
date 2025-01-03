@@ -1,29 +1,65 @@
 import { client } from '@/lib/sanity'
 import { urlFor } from '@/lib/sanity'
-import { PortableText } from '@portabletext/react'
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import Image from 'next/image'
+import PortableTextComponent from '@/components/PortableTextComponent'
+import Comments from '@/components/Comments'
+import ShareButtons from '@/components/ShareButtons'
+import { PortableTextBlock } from '@portabletext/types'
 
-async function getPost(slug: string) {
+interface Post {
+  _id: string;
+  title: string;
+  mainImage: {
+    asset: {
+      _ref: string;
+    };
+  };
+  body: PortableTextBlock[];
+  publishedAt: string;
+  author: string;
+  categories: { title: string }[];
+  comments: {
+    _id: string;
+    name: string;
+    content: string;
+    createdAt: string;
+  }[];
+}
+
+async function getPost(slug: string): Promise<Post | null> {
   const post = await client.fetch(`
     *[_type == "post" && slug.current == $slug][0] {
+      _id,
       title,
       mainImage,
       body,
       publishedAt,
       "author": author->name,
-      categories[]->{title}
+      categories[]->{title},
+      "comments": *[_type == "comment" && post._ref == ^._id] | order(createdAt desc) {
+        _id,
+        name,
+        content,
+        createdAt
+      }
     }
   `, { slug })
   return post
 }
 
-export default async function BlogPost({ params }: { params: { slug: string } }) {
+interface PageProps {
+  params: { slug: string }
+}
+
+export default async function BlogPost({ params }: PageProps) {
   const post = await getPost(params.slug)
 
   if (!post) {
     return <div>Post no encontrado</div>
   }
+
+  const postUrl = `https://tudominio.com/blog/${params.slug}`
 
   return (
     <div className="py-16 bg-white dark:bg-gray-900">
@@ -48,9 +84,12 @@ export default async function BlogPost({ params }: { params: { slug: string } })
                 </p>
               </div>
             </div>
-            <PortableText value={post.body} />
+            <PortableTextComponent content={post.body} />
+            <ShareButtons url={postUrl} title={post.title} />
           </CardContent>
         </Card>
+
+        <Comments postId={post._id} initialComments={post.comments} />
       </div>
     </div>
   )

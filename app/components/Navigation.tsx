@@ -21,8 +21,7 @@ export default function Navigation() {
     ['INICIO', '/'],
     ['SOBRE MÍ', '/sobre-mi'],
     ['PORTFOLIO', '/portfolio'],
-    ['BLOG', '/blog'],
-    ['APRENDE PROGRAMACIÓN', '/aprende'],
+    ['TEMPLATE / COMPONENTES', '/ventas'],
     ['CONTACTO', '/contacto'],
   ]
 
@@ -31,17 +30,17 @@ export default function Navigation() {
       "fixed top-0 w-full z-50 transition-all duration-300",
       isScrolled ? "bg-white dark:bg-gray-900 shadow-md py-4" : "bg-transparent py-6"
     )}>
-      <div className="container mx-auto px-4">
+      <div className="container px-4 mx-auto">
         <div className="flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold">
             tulogo
           </Link>
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="items-center hidden space-x-8 md:flex">
             {navItems.map(([title, url]) => (
               <Link
                 key={url}
                 href={url}
-                className="text-sm hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                className="text-sm transition-colors hover:text-blue-600 dark:hover:text-blue-400"
               >
                 {title}
               </Link>
@@ -49,7 +48,7 @@ export default function Navigation() {
             <ThemeToggle />
           </div>
           <button
-            className="md:hidden text-gray-600 dark:text-gray-300"
+            className="text-gray-600 md:hidden dark:text-gray-300"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -70,12 +69,12 @@ export default function Navigation() {
           </button>
         </div>
         {isMenuOpen && (
-          <div className="md:hidden mt-4 space-y-4">
+          <div className="mt-4 space-y-4 md:hidden">
             {navItems.map(([title, url]) => (
               <Link
                 key={url}
                 href={url}
-                className="block text-sm hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                className="block text-sm transition-colors hover:text-blue-600 dark:hover:text-blue-400"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {title}

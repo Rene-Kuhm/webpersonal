@@ -5,7 +5,7 @@ import Portfolio from '@/app/components/Portfolio'
 import Testimonials from '@/app/components/Testimonials'
 import Timeline from '@/app/components/Timeline'
 import ContactCTA from '@/app/components/ContactCTA'
-import BlogFeed from '@/app/components/BlogFeed'
+
 
 export default function Home() {
   return (
@@ -16,7 +16,6 @@ export default function Home() {
       <Portfolio />
       <Testimonials />
       <Timeline />
-      <BlogFeed />
       <ContactCTA />
     </main>
   )

@@ -1,15 +1,15 @@
 import { client } from '@/lib/sanity';
 import { Metadata } from 'next';
 
-// Updated interface to match Next.js types
-type PageProps = {
+type Props = {
   params: {
     productId: string;
   };
-  searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: Props
+): Promise<Metadata> {
   const query = `*[_type == "template" && _id == $productId]{ name }[0]`;
   const product = await client.fetch(query, { productId: params.productId });
 
@@ -19,9 +19,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function PaymentConfirmation({
-  params,
-}: PageProps) {
+export default async function PaymentConfirmation(
+  { params }: Props
+) {
   try {
     // Obtener el producto desde Sanity
     const query = `*[_type == "template" && _id == $productId]{ _id, name, file }[0]`;

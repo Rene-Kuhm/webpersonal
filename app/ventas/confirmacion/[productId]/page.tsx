@@ -1,12 +1,13 @@
 import { client } from '@/lib/sanity';
 import { Metadata } from 'next';
 
-// Define the type for the params prop
-interface PageProps {
+// Updated interface to match Next.js types
+type PageProps = {
   params: {
     productId: string;
   };
-}
+  searchParams: { [key: string]: string | string[] | undefined };
+};
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const query = `*[_type == "template" && _id == $productId]{ name }[0]`;
@@ -18,7 +19,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function PaymentConfirmation({ params }: PageProps) {
+export default async function PaymentConfirmation({
+  params,
+}: PageProps) {
   try {
     // Obtener el producto desde Sanity
     const query = `*[_type == "template" && _id == $productId]{ _id, name, file }[0]`;

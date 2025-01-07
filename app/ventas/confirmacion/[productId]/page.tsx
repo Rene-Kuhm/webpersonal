@@ -1,7 +1,14 @@
 import { client } from '@/lib/sanity';
 import { Metadata } from 'next';
 
-export async function generateMetadata({ params }: { params: { productId: string } }): Promise<Metadata> {
+// Define the type for the params prop
+interface PageProps {
+  params: {
+    productId: string;
+  };
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const query = `*[_type == "template" && _id == $productId]{ name }[0]`;
   const product = await client.fetch(query, { productId: params.productId });
 
@@ -11,7 +18,7 @@ export async function generateMetadata({ params }: { params: { productId: string
   };
 }
 
-export default async function PaymentConfirmation({ params }: { params: { productId: string } }) {
+export default async function PaymentConfirmation({ params }: PageProps) {
   try {
     // Obtener el producto desde Sanity
     const query = `*[_type == "template" && _id == $productId]{ _id, name, file }[0]`;

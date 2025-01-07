@@ -44,7 +44,7 @@ export default function TemplatesYComponentes() {
             <div key={product.id} className="flex flex-col p-6 bg-gray-100 rounded-lg shadow-lg dark:bg-gray-800">
               <product.icon className="mb-4 text-4xl text-blue-600" />
               <Image
-                src={product.image}
+                src={process.env.NEXT_PUBLIC_STRAPI_URL + product.image}
                 alt={product.title}
                 width={300}
                 height={200}

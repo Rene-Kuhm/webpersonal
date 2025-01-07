@@ -1,3 +1,5 @@
-import studio from '@sanity/eslint-config-studio'
+import { defineConfig } from '@sanity/pkg-utils'
 
-export default [...studio]
+const config = [defineConfig()]
+
+export default config
